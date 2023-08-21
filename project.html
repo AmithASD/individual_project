@@ -1,0 +1,216 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Random Number|calculate</title>
+    <style>
+      .outer{
+        border: 1px solid red;
+        width: 40vw;
+        height: 40vw;
+        margin-left: 0;
+        color: #dddddd;
+        background-color: rgb(14, 13, 13);
+      }
+      table {
+    border-collapse: collapse;
+  }
+  th,
+  td {
+    border: 1px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+  }
+  th {
+    background-color: #f2f2f2;
+  }
+  .selected {
+    background-color: yellow;
+  }
+  body {
+    background-color: powderblue;
+  }
+  .button1{
+    margin: 0;
+position: absolute;
+
+-ms-transform: translateY(-50%);
+transform: translateY(-50%);
+left:10%
+
+
+  }
+    </style>
+  </head>
+  <body>
+    <div class="outer">
+  <div>
+	<p>randomly selsct 50 Numbers within this range:</p>
+	</div>
+	
+    <label for="startRange">From:</label>
+    <input
+      type="text"
+      id="startRange"
+      name="startRange"
+      value=""
+      min="0"
+      max="1000"
+    />
+
+    <label for="endRange">To:</label>
+    <input
+      type="text"
+      id="endRange"
+      name="endRange"
+      value=""
+      min="0"
+      max="1000"
+    />
+    <br /><br />
+	<div class="button1">
+    <button onclick="generateNumbers()"><b>Do it!<b></button>
+	</div>
+    <br /><br />
+    <table id="numbersTable">
+      <thead>
+        <tr>
+          <th>Row#</th>
+          <th>A</th>
+          <th>B</th>
+          <th>C</th>
+          <th>D</th>
+          <th>E</th>
+          <th>F</th>
+          <th>G</th>
+          <th>H</th>
+          <th>I</th>
+          <th>J</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <br />
+
+    <p>Selected Numbers: <span id="selectedNumbers"></span></p>
+    <p>Sum: <span id="sum"></span></p>
+    <p>Multiplication: <span id="multiplication"></span></p>
+  </div>
+<script>
+  var selectedCells = [];
+      var sum = 0;
+      var multiplication = 1;
+
+      function generateNumbers() {
+        var startRangeInput = document.getElementById("startRange");
+        var endRangeInput = document.getElementById("endRange");
+        var startRange = parseInt(startRangeInput.value);
+        var endRange = parseInt(endRangeInput.value);
+        var numbersTable = document.getElementById("numbersTable");
+        var tbody = numbersTable.getElementsByTagName("tbody")[0];
+        var selectedNumbersOutput = document.getElementById("selectedNumbers");
+        var sumOutput = document.getElementById("sum");
+        var multiplicationOutput = document.getElementById("multiplication");
+
+        tbody.innerHTML = "";
+        selectedNumbersOutput.innerText = "";
+        sumOutput.innerText = "";
+        multiplicationOutput.innerText = "";
+
+        if (startRange === 0 || endRange === 0) {
+          sumOutput.innerText = "The summation of 0 numbers is 0.";
+          multiplicationOutput.innerText =
+            "The multiplication of 0 numbers is 0.";
+          return;
+        }
+
+        var range = Math.abs(endRange - startRange) + 1;
+        var numbers = [];
+
+        for (var i = 0; i < 50; i++) {
+          var randomNumber = Math.floor(Math.random() * range) + startRange;
+          numbers.push(randomNumber);
+        }
+
+        console.log(numbers);
+        var round = 0;
+        for (var j = 0; j < 5; j++) {
+          var row = document.createElement("tr");
+          for (var i = 0; i < 11; i++) {
+            var cell = document.createElement("td");
+
+            if (i == 0) {
+              var cellText = document.createTextNode(j + 1);
+            } else {
+              var pos = round + i - 1;
+              var cellText = document.createTextNode(numbers[pos]);
+            }
+
+            cell.appendChild(cellText);
+
+            row.appendChild(cell);
+
+            // var row = tbody.insertRow(i);
+            // var cell = row.insertCell(0);
+            // cell.innerHTML = numbers[i];
+
+            cell.addEventListener("click", function () {
+              if (selectedCells.length < 10) {
+                toggleSelection(this);
+              } else {
+                alert("Cannot select more than 10 Numbers");
+              }
+              console.log(selectedCells);
+            });
+          }
+          round += 10;
+          tbody.appendChild(row);
+        }
+      }
+
+      function toggleSelection(cell) {
+        if (cell.classList.contains("selected")) {
+          cell.classList.remove("selected");
+          var index = selectedCells.indexOf(cell);
+          if (index > -1) {
+            selectedCells.splice(index, 1);
+            sum -= parseInt(cell.innerText);
+            multiplication /= parseInt(cell.innerText);
+          }
+        } else {
+          cell.classList.add("selected");
+          selectedCells.push(cell);
+          sum += parseInt(cell.innerText);
+          multiplication *= parseInt(cell.innerText);
+        }
+
+        updateSelectedNumbers();
+        updateSum();
+        updateMultiplication();
+      }
+
+      function updateSelectedNumbers() {
+        var selectedNumbersOutput = document.getElementById("selectedNumbers");
+        selectedNumbersOutput.innerText = "";
+
+        selectedCells.forEach(function (cell, index) {
+          if (index > 0) {
+            selectedNumbersOutput.innerText += ", ";
+          }
+          selectedNumbersOutput.innerText += cell.innerText;
+        });
+      }
+
+      function updateSum() {
+        var sumOutput = document.getElementById("sum");
+        sumOutput.innerText = sum;
+      }
+
+      function updateMultiplication() {
+        var multiplicationOutput = document.getElementById("multiplication");
+        multiplicationOutput.innerText = multiplication;
+      }
+
+</script>
+      </body>
+</html>
